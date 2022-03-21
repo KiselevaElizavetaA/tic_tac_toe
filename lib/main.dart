@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_framework/responsive_wrapper.dart';
+import 'package:responsive_framework/utils/scroll_behavior.dart';
 import 'package:tic_tac_toe/presentation/pages/sign_in/sign_in_page.dart';
 
 import 'application/auth/auth_bloc.dart';
@@ -29,17 +31,17 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: StreamBuilder(
-            stream: _authStateChanges(),
-            builder: (context, snapshot) {
-              // If the snapshot has user data, then they're already signed in. So Navigating to the Dashboard.
-              if (snapshot.hasData) {
-                return const HomePage();
-              }
-              // Otherwise, they're not signed in. Show the sign in page.
-              return const SignInPage();
-            },
+          builder: (context, widget) => ResponsiveWrapper.builder(
+            ClampingScrollWrapper.builder(context, widget!),
+            breakpoints: const [
+              ResponsiveBreakpoint.resize(350, name: MOBILE),
+              ResponsiveBreakpoint.autoScale(600, name: TABLET),
+              ResponsiveBreakpoint.resize(800, name: DESKTOP),
+              ResponsiveBreakpoint.autoScale(1700, name: 'XL'),
+            ],
           ),
+          home: const HomePage(),
+          debugShowCheckedModeBanner: false,
         ),
       ),
     );
